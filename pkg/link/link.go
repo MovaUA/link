@@ -46,10 +46,7 @@ func isLink(n *html.Node) bool {
 func buildLink(n *html.Node) Link {
 	var sb strings.Builder
 	text(n, &sb)
-	text := sb.String()
-	if len(text) > 0 {
-		text = text[:len(text)-1]
-	}
+	text := strings.Join(strings.Fields(sb.String()), " ")
 
 	return Link{
 		Href: href(n),
