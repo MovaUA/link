@@ -1,8 +1,8 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -29,5 +29,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%+v\n", links)
+	e := json.NewEncoder(os.Stdout)
+	e.SetIndent("", "  ")
+	if err := e.Encode(links); err != nil {
+		log.Fatal(err)
+	}
 }

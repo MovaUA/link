@@ -10,8 +10,8 @@ import (
 
 // Link is a parsed representation of HTML <a> tag
 type Link struct {
-	Href string
-	Text string
+	Href string `json:"href,omitempty"`
+	Text string `json:"text,omitempty"`
 }
 
 // Find reads HTML from provided reader and returns found links
