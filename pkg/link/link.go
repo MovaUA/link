@@ -65,9 +65,9 @@ func href(n *html.Node) string {
 func text(n *html.Node, sb *strings.Builder) {
 	if isText(n) {
 		text := strings.TrimSpace(n.Data)
-		(*sb).WriteString(text)
+		sb.WriteString(text)
 		if len(text) > 0 {
-			(*sb).WriteRune(' ')
+			sb.WriteRune(' ')
 		}
 		return
 	}
