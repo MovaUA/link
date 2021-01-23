@@ -16,41 +16,45 @@ type Link struct {
 
 // Find reads HTML from provided reader and returns found links
 func Find(r io.Reader) ([]Link, error) {
-	root, err := html.Parse(r)
+	doc, err := html.Parse(r)
 	if err != nil {
 		return nil, err
 	}
 
-	var links []Link
-
-	for node := root; node != nil; node = node.NextSibling {
-		findLinks(node, &links)
-	}
-
-	return links, nil
+	return findLinks(doc), nil
 }
 
-func findLinks(n *html.Node, links *[]Link) {
+func findLinks(n *html.Node) []Link {
 	if isLink(n) {
-		var sb strings.Builder
-		text(n, &sb)
-		link := Link{
-			Href: href(n),
-			Text: sb.String(),
-		}
-		if len(link.Text) > 0 {
-			link.Text = link.Text[:len(link.Text)-1]
-		}
-		*links = append(*links, link)
+		link := buildLink(n)
+		return []Link{link}
 	}
 
+	var links []Link
+
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		findLinks(c, links)
+		links = append(links, findLinks(c)...)
 	}
+
+	return links
 }
 
 func isLink(n *html.Node) bool {
 	return n.Type == html.ElementNode && n.DataAtom == atom.A
+}
+
+func buildLink(n *html.Node) Link {
+	var sb strings.Builder
+	text(n, &sb)
+	text := sb.String()
+	if len(text) > 0 {
+		text = text[:len(text)-1]
+	}
+
+	return Link{
+		Href: href(n),
+		Text: text,
+	}
 }
 
 func href(n *html.Node) string {
